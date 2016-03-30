@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>gMaps - with Angular</title>
-	<link rel="stylesheet" type="text/css" href="css/styles.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
 	<script type="text/javascript" src="cities.js" ></script>
@@ -17,14 +17,14 @@
 	<div id="map">
 	</div>
 	<div id="map-panel">
+		<ol>
+			<li ng-repeat="city in cities track by $index">
+				<div class="city-name">{{city.city}}</div>
+				<a href="" ng-click="cityClick($index)" class="blue-button">Show Info</a>
+				<a href="" ng-click="zoomTo($index)" class="blue-button">Zoom</a>
+			</li>
+		</ol>
 	</div>
-	<form>
-	<div class="city col-xs-2" ng-repeat="city in (filteredCities = (cities | filter: searchString))">
-	{{city.yearRank}}: {{city.city}}
-	<a href="" class="btn btn-primary sm" ng-click="triggerClick(city.yearRank)">
-	Show Info
-	</a>
-	</div>
-	</form>
+
 </body>
 </html>
