@@ -1,14 +1,78 @@
 var mapsApp = angular.module('mapsApp', []);
 mapsApp.controller('mapsController', function ($scope){
+  
   $scope.markers = [];
+  infowindow = new google.maps.InfoWindow;
+  
   $scope.map = new google.maps.Map(document.getElementById('map'), {
     zoom: 4,
     //geographical center of the US
     center: new google.maps.LatLng(40.0000, -98.0000)
-  });
+  });      
+  $scope.searchFire = function(i) {
+    var latLon = cities[i].latLon.split(',');
+    var lat = Number(latLon[0]);
+    var lon = Number(latLon[1]);
+    var searchArea = {
+      lat: lat, 
+      lng: lon
+    };
+    var searchArea = new google.maps.LatLng(lat,lon);
+    $scope.map.setCenter(searchArea);
+    $scope.map.setZoom(10);
+
+    infowindow = new google.maps.InfoWindow();
+    var service = new google.maps.places.PlacesService($scope.map);
+    
+    service.nearbySearch({
+      location: searchArea,
+      radius: 50000
+      // type: ['fire_station']
+    }, callback);
+  }
   
-  infowindow = new google.maps.InfoWindow;
-	
+  searchHealth = function(lat, lon){
+    var searchArea = {
+      lat: lat, 
+      lng: lon
+    };
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: searchArea,
+      zoom: 10
+    });
+    infowindow = new google.maps.InfoWindow();
+    var service = new google.maps.places.PlacesService($scope.map);
+    service.nearbySearch({
+      location: searchArea,
+      radius: 5000,
+      type: ['hospital']
+    }, callback);
+    event.preventDefault();
+  }
+
+  function callback(results, status) {
+    console.log(results);
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      for (var i = 0; i < results.length; i++) {
+        createSearchMarker(results[i]);
+      }
+    }
+  }
+
+  function createSearchMarker(place) {
+    var placeLoc = place.geometry.location;
+    var marker = new google.maps.Marker({
+      map: map,
+      position: place.geometry.location
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.setContent(place.name);
+      infowindow.open(map, this);
+    });
+  }
+
+
   function createMarker (city){
 		var latLon = city.latLon.split(',');
 		var lat = latLon[0];
@@ -25,14 +89,15 @@ mapsApp.controller('mapsController', function ($scope){
     var contentString = '<div id="content">'+
       '<div id="siteNotice">'+
       '<h2>' + city.city + ", " + city.state + '</h2>'+
+      '<div class="yearRank">US Population Rank: ' + city.yearRank + '</div>' +
       '<div class="total-pop">Total Population: ' + city.yearEstimate + '</div>' +
       '<div class="pop-dens-last-year">2010 Census: ' + city.lastCensus + '</div>' +
-      '<div class="yearRank">US Population Rank: ' + city.yearRank + '</div>' +
       '<div class="pop-change">Population Change %: ' + city.change + '</div>' +
       '<div class="land-area">Land Area: ' + city.landArea + '</div>' +
       '<div class="land-areaInKM">Land Area Imperial: ' + city.landAreaInKm + '</div>' +
       '<div class="pop-dens">Population Density: ' + city.lastPopDensity + '</div>' +
       '<div class="directions"><a href="" onclick=getDirections('+lat+','+lon+');>Get Directions!</a></div>' +
+      '<div class="directions"><a href="" onclick=searchHealth('+lat+','+lon+');>Locate Hospitals!</a></div>' +
       '</div>';
 
     marker.addListener('click', function(){
@@ -61,25 +126,21 @@ mapsApp.controller('mapsController', function ($scope){
 
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer();
-    directionsDisplay.setMap($scope.map);
+    // directionsDisplay.setMap($scope.map);
 
   getDirections = function(lat, lon){   
        var request = {
          origin: 'Atlanta, GA', 
          destination:new google.maps.LatLng(lat,lon), 
-         travelMode: google.maps.DirectionsTravelMode.DRIVING
+         travelMode: google.maps.DirectionsTravelMode.DRIVING,
        };
        directionsService.route(request, function(response, status) {
          if (status == google.maps.DirectionsStatus.OK) {
            directionsDisplay.setDirections(response);
          }
        }); 
-      event.preventDefault();
+   event.preventDefault();
   }
-  
-
-  
-
   // when you click on cityClick find the i-th element in markers
   $scope.cityClick = function(i){
     google.maps.event.trigger($scope.markers[i],'click');
