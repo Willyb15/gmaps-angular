@@ -17,8 +17,8 @@ mapsApp.controller('mapsController', function ($scope){
       lat: lat, 
       lng: lon
     };
-    var searchArea = new google.maps.LatLng(lat,lon);
-    $scope.map.setCenter(searchArea);
+   
+    $scope.map.setCenter(new google.maps.LatLng(lat,lon));
     $scope.map.setZoom(10);
 
     infowindow = new google.maps.InfoWindow();
@@ -26,8 +26,8 @@ mapsApp.controller('mapsController', function ($scope){
     
     service.nearbySearch({
       location: searchArea,
-      radius: 50000
-      // type: ['fire_station']
+      radius: 50000,
+      type: ['fire_station']
     }, callback);
   }
   
@@ -36,10 +36,8 @@ mapsApp.controller('mapsController', function ($scope){
       lat: lat, 
       lng: lon
     };
-    map = new google.maps.Map(document.getElementById('map'), {
-      center: searchArea,
-      zoom: 10
-    });
+    $scope.map.setCenter(new google.maps.LatLng(lat,lon));
+    $scope.map.setZoom(10);
     infowindow = new google.maps.InfoWindow();
     var service = new google.maps.places.PlacesService($scope.map);
     service.nearbySearch({
@@ -48,6 +46,10 @@ mapsApp.controller('mapsController', function ($scope){
       type: ['hospital']
     }, callback);
     event.preventDefault();
+  }
+
+  function reset(){
+
   }
 
   function callback(results, status) {
@@ -62,13 +64,13 @@ mapsApp.controller('mapsController', function ($scope){
   function createSearchMarker(place) {
     var placeLoc = place.geometry.location;
     var marker = new google.maps.Marker({
-      map: map,
+      map: $scope.map,
       position: place.geometry.location
     });
 
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.setContent(place.name);
-      infowindow.open(map, this);
+      infowindow.open($scope.map, this);
     });
   }
 
