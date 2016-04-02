@@ -8,28 +8,31 @@ html, body {
 /* line 6, ../compass/sass/style.scss */
 #map {
   height: 100vh;
-  width: 84%;
+  width: 100%;
   float: left;
 }
 
 /* line 12, ../compass/sass/style.scss */
 #list-window, #map-panel {
+  position: absolute;
+  top: -3px;
+  right: -53px;
   height: 100%;
   width: 16%;
   float: right;
 }
-/* line 17, ../compass/sass/style.scss */
+/* line 20, ../compass/sass/style.scss */
 #list-window li, #map-panel li {
+  margin-left: -40px;
+  width: 33px;
+  display: block;
   list-style-type: none;
   text-align: center;
 }
-/* line 21, ../compass/sass/style.scss */
-#list-window .blue-button, #map-panel .blue-button {
+/* line 28, ../compass/sass/style.scss */
+#list-window .btn, #map-panel .btn {
   display: inline-block;
-  text-decoration: none;
-  background-color: black;
-  color: white;
   border-radius: 5px;
-  width: auto;
-  padding: 5px 10px;
+  width: 107px;
+  padding: 9px 0px;
 }

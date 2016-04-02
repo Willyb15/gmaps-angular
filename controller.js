@@ -8,7 +8,14 @@ mapsApp.controller('mapsController', function ($scope){
     zoom: 4,
     //geographical center of the US
     center: new google.maps.LatLng(40.0000, -98.0000)
-  });      
+  }); 
+
+// $scope.showMe = false;
+//     $scope.myFunc = function() {
+//         $scope.showMe = !$scope.showMe;
+//     }
+
+
   $scope.searchFire = function(i) {
     var latLon = cities[i].latLon.split(',');
     var lat = Number(latLon[0]);
@@ -29,7 +36,7 @@ mapsApp.controller('mapsController', function ($scope){
       radius: 50000,
       type: ['fire_station']
     }, callback);
-  }
+  };
   
   searchHealth = function(lat, lon){
     var searchArea = {
@@ -46,11 +53,12 @@ mapsApp.controller('mapsController', function ($scope){
       type: ['hospital']
     }, callback);
     event.preventDefault();
-  }
+  };
 
-  function reset(){
-
-  }
+  $scope.reset = function(){
+    $scope.map.setCenter(new google.maps.LatLng(40,-98));
+    $scope.map.setZoom(4);
+  };
 
   function callback(results, status) {
     console.log(results);
@@ -76,15 +84,15 @@ mapsApp.controller('mapsController', function ($scope){
 
 
   function createMarker (city){
-		var latLon = city.latLon.split(',');
-		var lat = latLon[0];
-		var lon = latLon[1];
-		// passing object into some Google Maps predefined functions
+    var latLon = city.latLon.split(',');
+    var lat = latLon[0];
+    var lon = latLon[1];
+    // passing object into some Google Maps predefined functions
     var marker = new google.maps.Marker(
     {
-			map: $scope.map,
-			position: new google.maps.LatLng(lat, lon),
-			title: city.city,
+      map: $scope.map,
+      position: new google.maps.LatLng(lat, lon),
+      title: city.city,
       animation: google.maps.Animation.DROP 
     });
     // Create new html for "contentString", pulled from cities object, put into th InfoWindow
@@ -103,7 +111,7 @@ mapsApp.controller('mapsController', function ($scope){
       '</div>';
 
     marker.addListener('click', function(){
-      infowindow.setContent(contentString)
+      infowindow.setContent(contentString);
       infowindow.open($scope.map, marker);
     });
 
@@ -128,28 +136,34 @@ mapsApp.controller('mapsController', function ($scope){
 
     directionsService = new google.maps.DirectionsService();
     directionsDisplay = new google.maps.DirectionsRenderer();
-    // directionsDisplay.setMap($scope.map);
+    directionsDisplay.setMap($scope.map);
 
   getDirections = function(lat, lon){   
-       var request = {
-         origin: 'Atlanta, GA', 
-         destination:new google.maps.LatLng(lat,lon), 
-         travelMode: google.maps.DirectionsTravelMode.DRIVING,
-       };
-       directionsService.route(request, function(response, status) {
-         if (status == google.maps.DirectionsStatus.OK) {
-           directionsDisplay.setDirections(response);
-         }
-       }); 
-   event.preventDefault();
+    var request = {
+      origin: 'Atlanta, GA', 
+      destination:new google.maps.LatLng(lat,lon), 
+      travelMode: google.maps.DirectionsTravelMode.DRIVING,
+    };
+      directionsService.route(request, function(response, status) {
+     if (status == google.maps.DirectionsStatus.OK) {
+     directionsDisplay.setDirections(response);
+    }
+    }); 
+    event.preventDefault();
   }
   // when you click on cityClick find the i-th element in markers
   $scope.cityClick = function(i){
+    console.log($scope.selectCity);
+    console.log(i);
     google.maps.event.trigger($scope.markers[i],'click');
   }
 
-	$scope.cities = cities;
-	for(i = 0; i< cities.length; i++){
-		createMarker(cities[i])
-	}
+  $scope.cities = cities;
+  for(i = 0; i< cities.length; i++){
+    createMarker(cities[i])
+  }
 });
+
+// $scope.hide = function (){
+//   ng-hide == "true";
+// }
