@@ -1,3 +1,5 @@
 #WebApp created with Google Maps API and Anuglar.js 
-### Google Maps clone using a few of their developer tools including,
-creating markups, search for directions, and search for areas.
+### Took U.S. population data from wikipedia.org, converted to JSON which is saved in the cities.js file
+### Bound this data and Google API'sto View and Controller using Angular $scope application object.
+### Based off this data - created markdowns, search for directions/hospitals/firestations, and direction from an origin of Atlanta functionality.
+###Google's API's are user friendly and contain a heap of pre-written code
