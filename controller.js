@@ -1,6 +1,5 @@
 var mapsApp = angular.module('mapsApp', []);
 mapsApp.controller('mapsController', function ($scope){
-  
   $scope.markers = [];
   infowindow = new google.maps.InfoWindow;
   
